@@ -6,6 +6,8 @@ from PIL import Image
 import os
 import torch
 import numpy as np
+from functools import partial
+import pickle
 
 import torch.utils.data as data
 from misc.utils import to_var
@@ -19,7 +21,10 @@ class Cifar10Dataloader(data.Dataset):
         root = configs['root']
         self.transform = configs['transform']
         self.split = split
-        data_dict = torch.load(os.path.join(root, 'data', 'cifar10', split + '.pth'))
+        pickle.load = partial(pickle.load, encoding="latin1")
+        pickle.Unpickler = partial(pickle.Unpickler, encoding="latin1")
+        data_dict = torch.load(os.path.join(root, 'data', 'cifar10', split + '.pth'),
+                               pickle_module=pickle)
         labels = []
         data = []
         for label, data_list in data_dict.items():

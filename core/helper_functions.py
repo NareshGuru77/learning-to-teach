@@ -60,12 +60,13 @@ def state_func(configs):
     combined_features[:, :10] = predicts
 
     eps = 1e-6
-    combined_features[:, 10:11] = -torch.log(predicts[range(n_samples), labels.data] + eps)
+    combined_features[:, 10:11] = -torch.log(predicts[range(n_samples), labels.data] + eps).reshape(-1, 1)
 
     mask = to_var(torch.ones(n_samples, num_classes))
 
     mask[range(n_samples), labels.data] = 0
-    combined_features[:, 11:12] = predicts[range(n_samples), labels.data] - torch.max(mask*predicts, 1)[0]
+    preds = predicts[range(n_samples), labels.data] - torch.max(mask*predicts, 1)[0]
+    combined_features[:, 11:12] = preds.reshape(-1, 1)
 
     states = torch.cat([data_features, model_features, combined_features], 1)
     return states

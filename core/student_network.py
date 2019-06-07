@@ -65,8 +65,8 @@ class StudentNetwork(nn.Module):
             loss.backward()
             optimizer.step()
             logger.info('Policy Steps: [%d] Train: ----- Iteration [%d], loss: %5.4f, accuracy: %5.4f(%5.4f)' % (
-                teacher_updates, current_epoch+1, loss.cpu().data[0], num_correct/num_samples, all_correct/all_samples))
-            loss_average += loss.cpu().data[0]
+                teacher_updates, current_epoch+1, loss.cpu().item(), num_correct/num_samples, all_correct/all_samples))
+            loss_average += loss.cpu().item()
         return loss_average/total_steps
 
     def val(self, configs):
